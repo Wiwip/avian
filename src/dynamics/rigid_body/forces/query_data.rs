@@ -213,6 +213,12 @@ pub trait ReadRigidBodyForces: ReadRigidBodyForcesInternal {
         self.ang_vel()
     }
 
+    /// Returns the [`ComputedMass`] of the body.
+    #[inline]
+    fn mass(&self) -> &ComputedMass {
+        ReadRigidBodyForcesInternal::mass(self)
+    }
+
     /// Returns the linear acceleration that the body has accumulated
     /// before the physics step in world space, including acceleration
     /// caused by forces.
@@ -593,6 +599,7 @@ trait ReadRigidBodyForcesInternal {
     fn rot(&self) -> &Rotation;
     fn lin_vel(&self) -> Vector;
     fn ang_vel(&self) -> AngularVector;
+    fn mass(&self) -> &ComputedMass;
     fn global_center_of_mass(&self) -> Vector;
     fn locked_axes(&self) -> LockedAxes;
     fn integration_data(&self) -> &VelocityIntegrationData;
@@ -628,6 +635,10 @@ impl ReadRigidBodyForcesInternal for ForcesItem<'_, '_> {
     #[inline]
     fn ang_vel(&self) -> AngularVector {
         self.angular_velocity.0
+    }
+    #[inline]
+    fn mass(&self) -> &ComputedMass {
+        self.mass
     }
     #[inline]
     fn global_center_of_mass(&self) -> Vector {
@@ -711,6 +722,10 @@ impl ReadRigidBodyForcesInternal for NonWakingForcesItem<'_, '_> {
         self.0.ang_vel()
     }
     #[inline]
+    fn mass(&self) -> &ComputedMass {
+        todo!()
+    }
+    #[inline]
     fn global_center_of_mass(&self) -> Vector {
         self.0.global_center_of_mass()
     }
@@ -744,6 +759,10 @@ impl ReadRigidBodyForcesInternal for ForcesReadOnlyItem<'_, '_> {
     #[inline]
     fn ang_vel(&self) -> AngularVector {
         self.angular_velocity.0
+    }
+    #[inline]
+    fn mass(&self) -> &ComputedMass {
+        self.mass
     }
     #[inline]
     fn global_center_of_mass(&self) -> Vector {
